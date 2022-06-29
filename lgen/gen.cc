@@ -1,6 +1,8 @@
 
 
+#include <exception>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <string>
 #include <fstream>
@@ -11,13 +13,11 @@
 using namespace std;
 using namespace lc;
 int main(){
-    char c;
-string inp;while(cin >> c)inp += c;
-stringstream ss(inp);
-Scanner scanner{ss};
+Scanner scanner{cin};
 Parser parser(scanner);
-auto ast = parser.parseLine();
-auto e = ast->emit();
+//parser.consume();
+map<string, string> decls;
+//cerr << parser.parseName();
 cout << "#include <functional>\n";
 cout << "#include <any>\n";
 cout << "struct o: std::function<o(const o&)>{std::any raw;using std::function<o(const o&)>::function;";
@@ -25,6 +25,13 @@ cout << "o(unsigned long x){if(x == 0){*this=[=](o const &zero) -> o{return [=](
 cout << "unsigned long scint() const{return std::any_cast<unsigned long>((*this)(o{.raw = (unsigned long)0})([=](o const &tosucc) -> o{return o{.raw = tosucc.scint() + 1};}).raw);};";
 cout << "};";
 cout << "inline o app(const o &a,const o &b){return o([=](const o &c) -> o{return a(b)(c);});};";
-cout << "o tgt(){return " << e << ";};";
-cout << "int main(){tgt()(o([=](o const &a) -> o{return a;}));};";
+while(scanner.curr() != Token::eof){
+auto g = parser.parseName();
+decls[g] = parser.parseLine()->emit();
+cerr << g;
+};
+for(auto d: decls)cerr << d.first;
+for(auto d: decls)cout << "extern o o_" << d.first << ";\n";
+cout << "int main(){o_tgt(o([=](o const &a) -> o{return a;}));};";
+for(auto d: decls)cout << "o o__" << d.first << "(){return " << d.second << ";};o o_" << d.first << " = o__" << d.first << "();\n";
 }

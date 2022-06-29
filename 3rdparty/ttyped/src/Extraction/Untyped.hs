@@ -3,7 +3,8 @@ module Extraction.Untyped ( UntypedLC (..)
                           , ExtrError (..)
                           , extract
                           , ppUntyped
-                          , ppExtrError )
+                          , ppExtrError 
+                          , extractBindings)
 where
 
 import Data.List (intersperse)
@@ -12,6 +13,8 @@ import Reduce (reduceObject)
 import Representation (Nat)
 import qualified Representation as R
 import qualified Check as C
+import qualified AST
+import Data.Map hiding (map)
 
 
 -- Type for terms in the untyped lambda calculus.
@@ -135,18 +138,18 @@ ppUntyped (App expr1 expr2) = ppApps [expr2] expr1
 ppUntyped (Axiom name) = name
 ppUntyped (Erased _) = "<erased>"
 ppUntyped (ErasedFun expr) = "λ<erased>. " ++ ppUntyped expr
-  
+
 ppFun :: [String] -> UntypedLC -> String
 ppFun vars (Fun name expr) = ppFun (name:vars) expr
 ppFun vars expr =
   let vars' = concat $ intersperse " " (reverse vars) in
-    "λ" ++ vars' ++ ". " ++ ppUntyped expr
+    "\\" ++ vars' ++ ". " ++ ppUntyped expr
 
 ppApps :: [UntypedLC] -> UntypedLC -> String
 ppApps os (App o1 o2) = ppApps (o2:os) o1
 ppApps os o =
   let os' = map maybeParen (o:os) in
-    concat $ intersperse " " os'
+    "(" ++ (concat $ intersperse " " os') ++ ")"
 
 
 ppExtrError :: ExtrError -> String
@@ -154,3 +157,17 @@ ppExtrError (TypeError err) = "Type error: " ++ C.ppError err
 ppExtrError (VarOutOfBound name n) = "Variable out of bounds (" ++ name ++ "[" ++ show n ++ "])"
 ppExtrError (TypeNotObject obj) = "Got type when expecting object (" ++ R.ppObject obj ++ ")"
 ppExtrError (CouldNotEraseObject obj) = "Could not erase object (" ++ R.ppObject obj ++ ")"
+
+-- | Extracts a set of variables given some bindings into Scheme code.
+extractBindings :: [String] -> AST.Bindings -> Either ExtrError String
+extractBindings vars bs =
+  do let bs' = AST.getBindMap bs
+     ss <- mapM exBind (fmap (\v -> (v, bs' ! v)) vars)
+     return $ concat ss
+  where
+    exBind (_, (R.O (R.Axiom name typ))) =
+      return $ "" --;; Omitted axiom " ++ name ++ " : " ++ R.ppTerm typ
+    exBind (name, expr) =
+      do res <- extract expr
+         maybe
+           (Right "") (Right . (\ x -> name ++ " (" ++ ppUntyped x ++ ")\n")) res

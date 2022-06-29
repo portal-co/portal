@@ -24,6 +24,7 @@ import Parser
 import Reduce
 import Representation
 import Extraction.Untyped
+import qualified Extraction.Untyped as EU
 import qualified Extraction.Scheme as ES
 
 import qualified Options.Applicative as OA
@@ -143,13 +144,13 @@ extractFiles' :: A.Bindings -> String -> [String] -> IO ()
 extractFiles' _ _ [] = return ()
 extractFiles' binds dir (file:files) =
   do (vars, binds') <- loadFile ([], binds) file
-     case ES.extractBindings (reverse vars) binds' of
+     case EU.extractBindings (reverse vars) binds' of
        Left err -> putStrLn ("Exraction Error: " ++ ppExtrError err)
        Right s -> writeFile (outputPath dir file) (s ++ "\n")
      extractFiles' binds' dir files
 
 outputPath :: String -> String -> String
-outputPath dir file = dir ++ "/" ++ map replaceSlash file ++ ".scm"
+outputPath dir file = dir ++ "/" ++ map replaceSlash file ++ ".lc"
   where
     replaceSlash '/' = '_'
     replaceSlash c = c

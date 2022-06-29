@@ -1,0 +1,26 @@
+id \x1. x1
+ret \x1. x1
+const \x1 v3. x1
+comp \f3 g4 x5. f3 (g4 x5)
+top \x1. x1
+false \x1 y2. x1
+true \x1 y2. y2
+bnot \b0. b0 (\x2 y3. y3) (\x2 y3. x2)
+band \x0 y1. x0 x0 y1
+bor \x0 y1. x0 y1 x0
+injL \x2 f4 g5. f4 x2
+injR \y2 f4 g5. g5 y2
+sigma \x2 y3 f5. f5 x2 y3
+fst \s2. s2 (\x3 v4. x3)
+pair \x2 y3 f5. f5 x2 y3
+snd \p2. p2 (\v3 y4. y4)
+refl \x1 p3. p3
+sym \x1 y2 eq3. eq3 (\p5. p5)
+trans \x1 y2 z3 eqXY4 eqYZ5. eqYZ5 eqXY4
+cong \x2 y3 f4 eq5. eq5 (\p7. p7)
+reflT \p2. p2
+symT \eq2. eq2 (\p4. p4)
+transT \eqAB3 eqBC4. eqBC4 eqAB3
+congT \eq3. eq3 (\p5. p5)
+typeConv \eq2. eq2 (\x3. x3)
+

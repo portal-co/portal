@@ -1,0 +1,2 @@
+def ttgen(name,srcs):
+    native.genrule(name = name,srcs = srcs,tools = ["@x_3rdparty//ttyped:ttyped"], outs = ["tgt.lc"], cmd = "mkdir tmp;LANG=C.UTF-8 $(execpath @x_3rdparty//ttyped:ttyped) $(SRCS) --extract tmp;cat tmp/* > $(OUTS)")

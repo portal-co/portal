@@ -327,7 +327,7 @@ public:
   }
 
   virtual string emit() const override{
-    return name();
+    return string("o_") + name();
   }
 
 protected:
@@ -380,7 +380,7 @@ public:
   }
 
   virtual string emit() const override{
-    return string("o([=](const o &") + Argument + ") -> o{return " + Body->emit() + ";})";
+    return string("o([=](const o &") + (string("o_") + Argument) + ") -> o{return " + Body->emit() + ";})";
   }
 
 protected:
@@ -587,8 +587,9 @@ class Parser {
 
 protected:
   Scanner &scanner;
-
+public:
   Token consume() { return scanner.next(); }
+private:
 
   // <application> := <expression><expression>
   unique_ptr<AST> parseApplicationExpr(vector<string> scope,
@@ -606,7 +607,7 @@ protected:
     }
 
     auto app = make_unique<ApplicationAST>(move(expr), move(arg));
-
+    std::cerr << scanner.curr();
     return parseApplicationExpr(scope, move(app));
   }
 
@@ -727,7 +728,16 @@ public:
   }
 
   unique_ptr<AST> parseLine() {
-    return move(parseApplicationExpr(vector<string>{}, nullptr));
+        std::cerr << scanner.curr();
+        vector<string> sc;
+    return move(parseExpression(sc));
+  }
+
+  string parseName(){
+    std::cerr << scanner.curr();
+    if(scanner.curr() == Token::id){auto s = scanner.curr().ValueString;consume();return s;};
+    if(scanner.curr() == Token::eof)return "end";
+    //throw "not id";
   }
 };
 

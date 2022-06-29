@@ -1,3 +1,8 @@
+local_repository(
+    name = "x_3rdparty",
+    path = "./3rdparty"
+)
+
 load(
     "@bazel_tools//tools/build_defs/repo:http.bzl",
     "http_archive"
@@ -35,11 +40,11 @@ load(
 
 stack_snapshot(
     name = "stackage",
-    packages = [],
+    packages = ["alex"],
     # LTS snapshot published for ghc-8.10.7 (default version used by rules_haskell)
     snapshot = "lts-18.18",
     # This uses an unpinned version of stack_snapshot, meaning that stack is invoked on every build.
     # To switch to pinned stackage dependencies, run \`bazel run @stackage-unpinned//:pin\` and
     # uncomment the following line.
-    vendored_packages = {"ttypes": "//3rdparty/ttypes:ttypes"}
+    vendored_packages = {"ttyped": "@x_3rdparty//ttyped:ttyped"}
 )

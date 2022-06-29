@@ -1,0 +1,1 @@
+git subtree pull --prefix 3rdparty/ttyped https://github.com/lambda-11235/ttyped.git CoC

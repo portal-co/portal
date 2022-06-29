@@ -1,1 +1,2 @@
-build --copt="--std=c++2a" --copt="-O3"
+build --host_copt="--std=c++2a"
+build --copt="--std=c++2a"

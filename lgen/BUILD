@@ -6,5 +6,5 @@ cc_binary(
 )
 lgen(
     name = "test1",
-    lam = "test1.lc"
+    lams = ["test1.lc"]
 )
