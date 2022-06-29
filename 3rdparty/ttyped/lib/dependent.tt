@@ -1,0 +1,21 @@
+# Depends on base.tt.
+
+# A demonstration of fully dependent types. The return type of foo and the type
+# of its second argument depends on the value of the first argument. This cannot
+# be done in System Fω.
+
+# A boolean that operates over types.
+let boolT = * -> * -> *
+let falseT = \a : *. \_ : *. a
+let trueT = \_ : *. \b : *. b
+
+let foo = \bt : boolT. \x : (bt topT bool). x
+
+
+# Example:
+# λ> foo trueT
+# Value: λx : (∀r : *. ∀x : r. ∀y : r. r). x
+# Type: ∀x : (∀r : *. ∀x : r. ∀y : r. r). ∀r : *. ∀x : r. ∀y : r. r
+# λ> foo falseT
+# Value: λx : (∀a : *. ∀x : a. a). x
+# Type: ∀x : (∀a : *. ∀x : a. a). ∀a : *. ∀x : a. a

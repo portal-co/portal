@@ -1,0 +1,40 @@
+name:                ttyped
+version:             0.1.0.0
+synopsis:            A dependently typed lambda calculus based on the calculus of constructions..
+-- description:
+homepage:            https://github.com/lambda-11235/ttyped
+license:             BSD3
+license-file:        LICENSE
+author:              Taran Lynn
+maintainer:          taranlynn0@gmail.com
+copyright:           2017 Taran Lynn
+category:            Math
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+executable ttyped
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  other-modules:       AST, Check, Reduce, Representation, Lexer, Parser,
+                       Extraction.Untyped, Extraction.Scheme
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wincomplete-patterns
+  build-depends:       base, array, containers, parsec, optparse-applicative
+  build-tools:         alex
+  default-language:    Haskell2010
+
+test-suite spec
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
+  hs-source-dirs:   src, test
+  ghc-options:      -Wincomplete-patterns
+  build-depends:    base, hspec, QuickCheck, array,
+                    containers, parsec
+  other-modules:    AST, Check, Reduce, Representation, Lexer, Parser
+                    , Tests.ReprGen, Tests.Util, Tests.CheckSpec
+                    , Tests.ReduceSpec
+  default-language: Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/lambda-11235/ttyped
