@@ -21,8 +21,8 @@ map<string, string> decls;
 cout << "#include <functional>\n";
 cout << "#include <any>\n";
 cout << "struct o: std::function<o(const o&)>{std::any raw;using std::function<o(const o&)>::function;";
-cout << "o(unsigned long x){if(x == 0){*this=[=](o const &zero) -> o{return [=](o const &succ) -> o{return zero;};};return;};*this=[=](o const &zero) -> o{return [=](o const &succ) -> o{return succ(x - 1);};};};";
-cout << "unsigned long scint() const{return std::any_cast<unsigned long>((*this)(o{.raw = (unsigned long)0})([=](o const &tosucc) -> o{return o{.raw = tosucc.scint() + 1};}).raw);};";
+cout << "o(unsigned long x){*this=[=](o const &zero) -> o{return [=](o const &succ) -> o{auto z = zero;for(unsigned long i = 0;i < x;i++)z = succ(z);return z;};};};";
+cout << "unsigned long scint() const{return std::any_cast<unsigned long>((*this)(o{.raw = (unsigned long)0})([=](o const &tosucc) -> o{return o{.raw = std::any_cast<unsigned long>(tosucc.raw) + 1};}).raw);};";
 cout << "};";
 cout << "inline o app(const o &a,const o &b){return o([=](const o &c) -> o{return a(b)(c);});};";
 while(scanner.curr() != Token::eof){
