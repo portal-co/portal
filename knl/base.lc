@@ -1,1 +1,0 @@
-tgt ((\x. main (x x)) (\x. main (x x)))

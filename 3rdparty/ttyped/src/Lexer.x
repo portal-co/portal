@@ -6,7 +6,7 @@ import Representation (Nat)
 
 %wrapper "posn"
 
-@char = [a-zA-Z]
+@char = [a-zA-Z0-9\$]
 -- @digit = [0-9]
 
 tokens :-

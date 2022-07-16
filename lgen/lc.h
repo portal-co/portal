@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <deque>
 
 namespace lc {
 
@@ -162,6 +163,7 @@ protected:
 struct Token : virtual public Stringer {
   enum Type {
     undefined,
+    raw,
     eof,
     lambda,
     dot,
@@ -283,7 +285,7 @@ public:
 
   virtual Type type() const = 0;
   virtual unique_ptr<AST> clone() const = 0;
-  virtual string emit() const = 0;
+  virtual string emit(string ty) const = 0;
 };
 
 // <name> := [a-zA-Z][a-zA-Z0-9]*
@@ -326,7 +328,7 @@ public:
     return ss.str();
   }
 
-  virtual string emit() const override{
+  virtual string emit(string ty) const override{
     return string("o_") + name();
   }
 
@@ -379,8 +381,8 @@ public:
     return ss.str();
   }
 
-  virtual string emit() const override{
-    return string("o([=](const o &") + (string("o_") + Argument) + ") -> o{return " + Body->emit() + ";})";
+  virtual string emit(string ty) const override{
+    return string("o([=](const o &") + (string("o_") + Argument) + ") -> o{return " + Body->emit(ty) + ";})";
   }
 
 protected:
@@ -424,12 +426,27 @@ public:
        << prefix << "}";
     return ss.str();
   }
-  string emit() const override{
-    return string("app(") + Lhs->emit() + "," + Rhs->emit() + ")";
+  string emit(string x) const override{
+    return string("app(") + Lhs->emit(x) + "," + Rhs->emit(x) + ")";
   }
 
 protected:
   unique_ptr<AST> Lhs, Rhs;
+};
+
+class RawAST: public AST{
+  public:
+  string raw;
+  RawAST(string x): raw(x){};
+  string emit(string ty) const override{
+    return raw;
+  }
+  virtual unique_ptr<AST> clone() const override {
+    return make_unique<RawAST>(raw);
+  }
+  virtual Type type() const override {throw this;}
+  virtual string str() const override {return string("`") + raw + "`";}
+  virtual string describe(const string &p) const override {return string("`") + raw + "`";}
 };
 
 // boost::locale::generator generator;
@@ -440,7 +457,13 @@ public:
   static const Position initialPosition;
 
 protected:
+std::deque<char> q;
   char get() {
+    if(q.size()){
+      char c = q.front();
+      q.pop_front();
+      return c;
+    };
     Ch = Input.get();
     Pos.incr();
     return Ch;
@@ -457,17 +480,38 @@ protected:
 
     Position currentPos = Pos;
 
-    if (isalpha(Ch)) {
+    if(Ch == '`'){
+      char old = Ch;
+      std::cerr << int(old);
+      get();
+      string s{};
+      do {
+        s += Ch;
+        std::cerr << int(Ch) << "`" << s << "`";
+                std::cerr << std::endl;
+        if(Ch != old){
+         get();
+        }else{
+          
+          goto out;
+        }
+      } while (Ch != old && Ch != -1);
+      out:
+        std::cerr << int(get()) << std::endl;
+      return Token(Token::raw, s, currentPos);
+    }
+
+    if (isalnum(Ch)) {
       string s{};
 
       do {
         s += Ch;
         get();
-      } while (isalnum(Ch));
+      } while (isalnum(Ch) || Ch == '$');
 
       return Token(Token::id, s, currentPos);
     }
-
+/*
     if (isalnum(Ch)) {
       string s{};
 
@@ -480,7 +524,7 @@ protected:
 
       return Token(Token::number, i, currentPos);
     }
-
+*/
     switch (Ch) {
     case '\\': {
       get();
@@ -614,6 +658,12 @@ private:
   // <expression> := <name> | <function> | <application> | <p-expression>
   unique_ptr<AST> parseExpression(vector<string> &scope) {
     switch (scanner.curr().ValueType) {
+    case Token::raw:
+    {
+    auto a = std::make_unique<RawAST>(scanner.curr().ValueString);
+    consume();
+    return a;
+    }
     case Token::id:
       return parseNameExpr(scope);
     case Token::lambda:
@@ -732,7 +782,11 @@ public:
         vector<string> sc;
     return move(parseExpression(sc));
   }
-
+  string parseRaw(){
+        std::cerr << scanner.curr();
+    if(scanner.curr() == Token::raw){auto s = scanner.curr().ValueString;consume();return s;};
+    if(scanner.curr() == Token::eof)return "end";
+  }
   string parseName(){
     std::cerr << scanner.curr();
     if(scanner.curr() == Token::id){auto s = scanner.curr().ValueString;consume();return s;};

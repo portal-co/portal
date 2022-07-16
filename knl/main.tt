@@ -1,1 +1,11 @@
-let main = id
+axiom todo : @a: *. a
+axiom DANGERfix : @a : *. @P : (a -> *).
+  ((@x : a. P x) -> (@x : a. P x)) -> (@x : a. P x)
+axiom DANGERfixT : (* -> *) -> *
+let tick = \r : *. (pairT (list (list nat)) r) -> (pairT (list (list nat)) r)
+let ks = idT
+axiom emit : (list (list nat)) -> (list (list nat))
+let dpairT = \y: *. \d: (y -> *). @r: *. (@x: y. (d x) -> r) -> r
+let dpair = \y: *. \d: (y -> *). \a: y. \b: (d a). \r: *. \fn:(@x: y. (d x) -> r). fn a b
+let knl = \before : (pairT (list (list nat)) ks). before
+let main = \before : (pairT (list (list nat)) ks). (pair (list (list nat)) ks (emit (fstX (list (list nat)) ks (knl before))) (snd (list (list nat)) ks (knl before)))

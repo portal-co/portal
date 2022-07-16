@@ -1,0 +1,1 @@
+cc_library(name = "infint", hdrs = ["InfInt.h"], visibility=["//visibility:public"])

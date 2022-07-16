@@ -1,0 +1,5 @@
+tgt ((\x. main (x x)) (\x. main (x x)))
+emit (\x.x)
+DANGERfix (fix)
+DANGERfixT (fix)
+yield (\c.\s.snd s 0 (\a.\b.a (\x.x) (pair (fst s) (list$append b (list$cons c list$empty)))))

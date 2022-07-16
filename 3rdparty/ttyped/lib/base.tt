@@ -55,6 +55,9 @@ let pair = \a : *. \b : *. \x : a. \y : b. ret (pairT a b)
 let snd = \a : *. \b : *. \p : (pairT a b). ret b
   (p b (\_ : a. \y : b. y))
 
+let fstX = \a : *. \b : *. \p : (pairT a b). ret a
+  (p a (\x : a. \_ : b. x))
+
 
 # The identity type, which represents propositional equality.
 let I = \a : *. \x : a. \y : a.
