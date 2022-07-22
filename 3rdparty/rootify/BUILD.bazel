@@ -1,0 +1,1 @@
+cc_binary(name = "rootify",srcs = ["rootify.cpp"],visibility=["//visibility:public"])
