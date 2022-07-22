@@ -85,3 +85,7 @@ load(
 
 load("@x_3rdparty//:container_deps.bzl","container_deps")
 container_deps(container_pull)
+local_repository(
+    name = "rootify",
+    path = "3rdparty/rootify"
+)

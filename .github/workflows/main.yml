@@ -24,6 +24,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      - name: pull
+        run: sh ./pull.sh
       - name: generate
         run: bazelisk run //:gen
       # Runs a single command using the runners shell
