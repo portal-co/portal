@@ -1,13 +1,4 @@
 bazel-*
-
-# Added by cargo
-
+node_modules
 /target
-
-
-# Added by cargo
-#
-# already existing elements were commented out
-
-#/target
 Cargo.lock
