@@ -1,0 +1,3 @@
+[submodule "3rdparty/wasm3"]
+	path = 3rdparty/wasm3
+	url = https://github.com/portal-co/wasm3-rs.git
