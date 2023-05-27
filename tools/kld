@@ -1,0 +1,2 @@
+#!/bin/sh
+$R/cc/wasi/wasi-sdk-20.0/bin/lld -flavor wasm -L $R/cc/wasi/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi-threads $(echo "$@" | sed 's/stdc/c/' | sed 's/-flavor wasm//' | sed "s/crt1-command.o//") $R/cc/wasi/wasi-sdk-20.0/share/wasi-sysroot/lib/wasm32-wasi-threads/crt1-command.o

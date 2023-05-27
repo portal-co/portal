@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "subsystem/loader",
+    "subsystem/lib",
+    "util/libs-all",
+    "subsystem/types",
+    "util/fn-utils"
+]
+exclude = ["3rdparty"]
+
+[workspace.dependencies]
+wasm3 = {path = "./3rdparty/wasm3"}

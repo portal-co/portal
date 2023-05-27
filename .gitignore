@@ -1,0 +1,4 @@
+3rdparty-*
+cc
+3rdparty.o
+target

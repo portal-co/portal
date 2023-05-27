@@ -1,0 +1,1 @@
+$R/cc/wasi/wasi-sdk-20.0/bin/clang -pthread -D_WASI_EMULATED_SIGNAL  -lwasi-emulated-signal -Wl,--import-undefined -lwasi-emulated-process-clocks -D_WASI_EMULATED_PROCESS_CLOCKS --target=wasm32-wasi-threads --sysroot=$R/cc/wasi/wasi-sdk-20.0/share/wasi-sysroot "$@" 2>&1 | sed 's/unknown-wasi/wasi/'

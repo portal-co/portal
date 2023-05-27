@@ -1,0 +1,1 @@
+cmake -DR=$R -DCMAKE_TOOLCHAIN_FILE=$R/tools/tools.cmake -DWASI_SDK_PREFIX=$R/cc/wasi/wasi-sdk-20.0 "-DCMAKE_MODULE_PATH=$R/cc/wasi/wasi-sdk-20.0/share/cmake $R/tools/cmake-wasi" "$@"

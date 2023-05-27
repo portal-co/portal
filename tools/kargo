@@ -1,0 +1,1 @@
+CC="sh $R/tools/kcc" CXX="sh $R/tools/k++" HOST_CC=/usr/bin/cc HOST_CXX=/usr/bin/c++ RUSTFLAGS="-C linker=$R/tools/kld" HOST_AR="/usr/bin/ar" AR="$R/cc/wasi/wasi-sdk-20.0/bin/llvm-ar" cargo +nightly build -Zbuild-std=std,panic_abort --target=wasm32-wasi
